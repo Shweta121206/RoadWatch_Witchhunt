@@ -1,4 +1,4 @@
-# RoadWatch AI - Implementation Plan
+# RoadWatch - Implementation Plan
 
 **Hackathon**: Witch Hunt
 **Topic**: Smart City

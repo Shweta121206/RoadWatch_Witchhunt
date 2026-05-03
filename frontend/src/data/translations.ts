@@ -1,6 +1,7 @@
 export const translations = {
   English: {
     dashboard: "Dashboard",
+    liveMap: "Live Map",
     analytics: "Analytics",
     potholes: "Potholes",
     trips: "Trips",
@@ -182,6 +183,7 @@ export const translations = {
   },
   Tamil: {
     dashboard: "டாஷ்போர்டு",
+    liveMap: "Live Map",
     analytics: "பகுப்பாய்வு",
     potholes: "சாலை குழிகள்",
     trips: "பயணங்கள்",
@@ -363,6 +365,7 @@ export const translations = {
   },
   Hindi: {
     dashboard: "डैशबोर्ड",
+    liveMap: "Live Map",
     analytics: "विश्लेषण",
     potholes: "गड्ढे",
     trips: "यात्राएं",

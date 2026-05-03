@@ -1,22 +1,17 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../contexts/LanguageContext";
-import type { Vehicle } from "../types";
 
 interface HeaderProps {
   onLogout: () => void;
-  selectedVehicle: Vehicle | null;
-  onRemoveVehicle: () => void;
 }
 
-export default function Header({ onLogout, selectedVehicle, onRemoveVehicle }: HeaderProps) {
+export default function Header({ onLogout }: HeaderProps) {
   const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [showResults, setShowResults] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
-  const canRemoveVehicle = location.pathname === "/vehicles" && Boolean(selectedVehicle);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -29,7 +24,7 @@ export default function Header({ onLogout, selectedVehicle, onRemoveVehicle }: H
 
     const mockData = [
       { id: 1, name: "T. Nagar Main Road", location: "13.0827, 80.2707", detections: 3, status: "detected" },
-      { id: 2, name: "Mount Road", location: "13.0850, 80.2780", detections: 5, status: "reported" },
+      { id: 2, name: "Mount Road", location: "13.0850, 80.2780", detections: 5, status: "reopened" },
       { id: 3, name: "Adyar Bridge", location: "13.0011, 80.2565", detections: 2, status: "in_progress" },
       { id: 4, name: "Velachery Main Road", location: "12.9791, 80.2442", detections: 1, status: "fixed" },
       { id: 5, name: "Anna Salai", location: "13.0845, 80.2748", detections: 4, status: "detected" },
@@ -70,9 +65,8 @@ export default function Header({ onLogout, selectedVehicle, onRemoveVehicle }: H
       </div>
       <div className="topbar-right">
         <div className="date-pill">01 May 2026 - 01 June 2026</div>
-        <button className="topbar-action green" onClick={() => navigate("/add")}>{t("add")}</button>
-        <button className="topbar-action" onClick={() => navigate("/request")}>{t("request")}</button>
-        <button className="topbar-action danger" disabled={!canRemoveVehicle} onClick={onRemoveVehicle}>{t("remove")}</button>
+        <button className="topbar-action green" onClick={() => navigate("/")}>Live map</button>
+        <button className="topbar-action" onClick={() => navigate("/potholes")}>Detections</button>
         <button className="pill-button secondary" onClick={onLogout}>{t("logout")}</button>
       </div>
     </header>

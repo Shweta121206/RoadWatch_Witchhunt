@@ -1,91 +1,90 @@
-import { useState } from "react";
-import { potholesData } from "../data/mockData";
-import { useLanguage } from "../contexts/LanguageContext";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import SeverityBadge from "../components/SeverityBadge";
+import StatusBadge from "../components/StatusBadge";
+import { getPotholes } from "../services/api";
+import type { Pothole, Severity, Status } from "../types";
 
-const severityColors: Record<string, string> = {
-  critical: "#dc2626",
-  high: "#f97316",
-  medium: "#facc15",
-  low: "#10b981",
-};
+type SeverityFilter = "all" | Severity;
+type StatusFilter = "all" | Status;
 
 export default function Potholes() {
-  const { t } = useLanguage();
-  const [filter, setFilter] = useState("all");
-  const filtered = filter === "all" ? potholesData : potholesData.filter((item) => item.severity === filter);
+  const [potholes, setPotholes] = useState<Pothole[]>([]);
+  const [severity, setSeverity] = useState<SeverityFilter>("all");
+  const [status, setStatus] = useState<StatusFilter>("all");
+  const [date, setDate] = useState("");
+
+  useEffect(() => {
+    getPotholes().then(setPotholes);
+  }, []);
+
+  const filtered = useMemo(() => potholes.filter((pothole) => {
+    const matchesSeverity = severity === "all" || pothole.severity === severity;
+    const matchesStatus = status === "all" || pothole.status === status;
+    const matchesDate = !date || pothole.detectedAt.startsWith(date);
+    return matchesSeverity && matchesStatus && matchesDate;
+  }), [date, potholes, severity, status]);
 
   return (
     <div className="potholes-page">
-      <div className="hero-card">
+      <div className="page-title-row">
         <div>
-          <div className="eyebrow">{t("potholeManagement")}</div>
-          <h1>{t("reviewRepair")}</h1>
-          <p>{t("potholesOverview")}</p>
+          <span className="eyebrow dark">Detections</span>
+          <h1>Potholes</h1>
+          <p>Filter AI detections by severity, repair status, and date.</p>
         </div>
-        <div className="hero-metrics">
-          <div>
-            <p>{t("totalActive")}</p>
-            <h2>{filtered.length}</h2>
-          </div>
-          <div className="hero-badge">{t("liveUpdates")}</div>
-        </div>
+        <strong>{filtered.length} visible</strong>
       </div>
 
-      <div className="main-grid">
-        <div className="chart-card">
-          <div className="chart-head">
-            <h2>{t("potholeCases")}</h2>
-            <div className="toggle-group">
-              <button className={`toggle ${filter === "all" ? "active" : ""}`} onClick={() => setFilter("all")}>
-                {t("all")}
-              </button>
-              <button className={`toggle ${filter === "critical" ? "active" : ""}`} onClick={() => setFilter("critical")}>
-                {t("critical")}
-              </button>
-              <button className={`toggle ${filter === "high" ? "active" : ""}`} onClick={() => setFilter("high")}>
-                {t("high")}
-              </button>
-            </div>
-          </div>
-          <div className="activity-table">
-            {filtered.slice(0, 8).map((item) => (
-              <div key={item.id} className="activity-row">
-                <div>
-                  <strong>{item.title}</strong>
-                  <p>{item.location} - {Math.round(item.confidence * 100)}% {t("confidence")}</p>
-                </div>
-                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                  <span className="hero-badge" style={{ background: severityColors[item.severity] || "#64748b", color: "#ffffff" }}>
-                    {t(item.severity)}
-                  </span>
-                  <span className="hero-badge" style={{ background: "#f8fafc", color: "#0f172a" }}>
-                    {t(item.status)}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+      <section className="filter-bar">
+        <label>
+          Severity
+          <select value={severity} onChange={(event) => setSeverity(event.target.value as SeverityFilter)}>
+            <option value="all">All</option>
+            <option value="critical">Critical</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </label>
+        <label>
+          Status
+          <select value={status} onChange={(event) => setStatus(event.target.value as StatusFilter)}>
+            <option value="all">All</option>
+            <option value="detected">Detected</option>
+            <option value="in_progress">In progress</option>
+            <option value="fixed">Fixed</option>
+            <option value="reopened">Reopened</option>
+          </select>
+        </label>
+        <label>
+          Date
+          <input type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+        </label>
+      </section>
 
-        <div className="stats-panel">
-          <h2>{t("quickStats")}</h2>
-          <div className="stat-box">
-            <span>{t("criticalPriority")}</span>
-            <strong>{potholesData.filter((p) => p.severity === "critical").length}</strong>
-            <small>{t("requiresImmediateAttention")}</small>
-          </div>
-          <div className="stat-box green">
-            <span>{t("fixedToday")}</span>
-            <strong>{potholesData.filter((p) => p.status === "fixed").length}</strong>
-            <small>{t("completedRepairs")}</small>
-          </div>
-          <div className="stat-box">
-            <span>{t("averageResponse")}</span>
-            <strong>2.4h</strong>
-            <small>{t("timeToFirstAction")}</small>
-          </div>
+      <section className="panel pothole-table-panel">
+        <div className="pothole-table pothole-table-head">
+          <span>ID</span>
+          <span>Severity</span>
+          <span>Status</span>
+          <span>Location</span>
+          <span>Date</span>
+          <span>Confidence</span>
         </div>
-      </div>
+        <div className="pothole-table-body">
+          {filtered.map((pothole) => (
+            <Link key={pothole.id} to={`/potholes/${pothole.id}`} className="pothole-table pothole-table-row">
+              <strong>{pothole.id}</strong>
+              <SeverityBadge severity={pothole.severity} />
+              <StatusBadge status={pothole.status} />
+              <span>{pothole.location}</span>
+              <span>{pothole.detectedAt}</span>
+              <span>{Math.round(pothole.confidence * 100)}%</span>
+            </Link>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { useLanguage } from "../contexts/LanguageContext";
 const navItems = [
   {
     path: "/",
-    labelKey: "dashboard",
+    labelKey: "liveMap",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 18h6V6H4v12ZM14 18h6V10h-6v8Z" />
@@ -36,16 +36,6 @@ const navItems = [
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M3 7h18M6 7v10h12V7M6 17h12" />
         <path d="M8 4h8l2 3H6L8 4Z" />
-      </svg>
-    ),
-  },
-  {
-    path: "/vehicles",
-    labelKey: "vehicles",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M5 17h14M7 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm14 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" />
-        <path d="M5 17V9l2-4h9l3 4v8M7 9h12" />
       </svg>
     ),
   },
