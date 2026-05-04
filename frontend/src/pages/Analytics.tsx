@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
+import { MapContainer, TileLayer } from "react-leaflet";
 import { severityDistribution, timelineData } from "../data/mockData";
 import { getAnalyticsSummary, getPotholes } from "../services/api";
 import type { AnalyticsSummary, Pothole } from "../types";
+import LeafletHeatmap from "../components/LeafletHeatmap";
 
 const wardStats = [
   {
@@ -60,11 +62,40 @@ export default function Analytics() {
     getPotholes().then(setPotholes);
   }, []);
 
-  const heatPoints = useMemo(() => potholes.map((pothole, index) => ({
-    ...pothole,
-    left: 18 + ((index * 23) % 68),
-    top: 20 + ((index * 17) % 58),
-  })), [potholes]);
+  const center: [number, number] = potholes.length
+    ? [potholes[0].latitude, potholes[0].longitude]
+    : [13.0827, 80.2707];
+
+  const heatPoints = useMemo(() => {
+    const basePoints = potholes.map((pothole) => {
+      const severityWeight = {
+        critical: 1,
+        high: 0.85,
+        medium: 0.65,
+        low: 0.45,
+      }[pothole.severity];
+
+      return [pothole.latitude, pothole.longitude, severityWeight] as [number, number, number];
+    });
+
+    return basePoints.flatMap(([lat, lng, intensity]) => {
+      const cluster: [number, number, number][] = [[lat, lng, intensity]];
+
+      for (let i = 1; i <= 5; i += 1) {
+        const offset = 0.00015 * i;
+        const strength = Math.max(0.15, intensity * (0.6 + i * 0.06));
+        const angles = [0, Math.PI / 4, Math.PI / 2, (3 * Math.PI) / 4, Math.PI];
+
+        angles.forEach((angle, index) => {
+          const deltaLat = Math.cos(angle) * offset * (index + 1);
+          const deltaLng = Math.sin(angle) * offset * (index + 1);
+          cluster.push([lat + deltaLat, lng + deltaLng, strength]);
+        });
+      }
+
+      return cluster;
+    });
+  }, [potholes]);
 
   const cards = [
     { label: "Total potholes", value: summary?.totalPotholes ?? 0, color: "#0f766e" },
@@ -104,14 +135,19 @@ export default function Analytics() {
             </div>
           </div>
           <div className="heatmap-panel">
-            {heatPoints.map((point) => (
-              <span
-                key={point.id}
-                className={`heat-point heat-${point.severity}`}
-                style={{ left: `${point.left}%`, top: `${point.top}%` }}
-                title={`${point.id} ${point.severity}`}
+            <MapContainer
+              center={center}
+              zoom={12}
+              scrollWheelZoom
+              className="leaflet-map"
+              style={{ height: "100%" }}
+            >
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-            ))}
+              <LeafletHeatmap points={heatPoints} />
+            </MapContainer>
           </div>
         </div>
 

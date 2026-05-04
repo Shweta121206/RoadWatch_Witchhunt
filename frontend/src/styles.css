@@ -1623,17 +1623,37 @@ body.dark-mode .secondary-button:hover {
   font-size: 0.78rem;
   font-weight: 800;
   line-height: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .severity-critical { background: #dc2626; }
 .severity-high { background: #f97316; }
-.severity-medium { background: #eab308; color: #422006; }
-.severity-low { background: #16a34a; }
-.status-detected { background: #2563eb; }
-.status-in_progress { background: #7c3aed; }
-.status-fixed { background: #16a34a; }
-.status-reopened { background: #f97316; }
-.status-false_positive { background: #64748b; }
+.severity-medium { background: #facc15; color: #111827; }
+.severity-low { background: #15803d; }
+.status-detected { background: #1d4ed8; color: #ffffff !important; }
+.status-in_progress { background: #6d28d9; color: #ffffff !important; }
+.status-fixed { background: #15803d; color: #ffffff !important; }
+.status-reopened { background: #c2410c; color: #ffffff !important; }
+.status-false_positive { background: #475569; color: #ffffff !important; }
+
+.heatmap-panel {
+  position: relative;
+  min-height: 300px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: none;
+}
+
+.heatmap-panel .leaflet-map {
+  height: 100%;
+  min-height: 300px;
+}
+
+.heatmap-panel .leaflet-container {
+  background: #eff6ff;
+}
 
 .live-feed {
   display: grid;
@@ -1926,19 +1946,18 @@ body.dark-mode .secondary-button:hover {
   border-radius: 8px;
   object-fit: cover;
 }
-
 .pothole-gallery {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
 .pothole-gallery img {
   width: 100%;
   aspect-ratio: 4 / 3;
-  border: 1px solid var(--border);
-  border-radius: 8px;
   object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border);
 }
 
 .detail-map {
