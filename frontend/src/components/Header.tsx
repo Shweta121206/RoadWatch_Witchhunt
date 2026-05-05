@@ -65,8 +65,8 @@ export default function Header({ onLogout }: HeaderProps) {
       </div>
       <div className="topbar-right">
         <div className="date-pill">01 May 2026 - 01 June 2026</div>
-        <button className="topbar-action green" onClick={() => navigate("/")}>Live map</button>
-        <button className="topbar-action" onClick={() => navigate("/potholes")}>Detections</button>
+        <button className="topbar-action green" onClick={() => navigate("/")}>{t("liveMap")}</button>
+        <button className="topbar-action" onClick={() => navigate("/potholes")}>{t("detections")}</button>
         <button className="pill-button secondary" onClick={onLogout}>{t("logout")}</button>
       </div>
     </header>

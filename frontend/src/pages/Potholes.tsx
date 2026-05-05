@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useLanguage } from "../contexts/LanguageContext";
 import { Link } from "react-router-dom";
 import SeverityBadge from "../components/SeverityBadge";
 import StatusBadge from "../components/StatusBadge";
@@ -9,6 +10,7 @@ type SeverityFilter = "all" | Severity;
 type StatusFilter = "all" | Status;
 
 export default function Potholes() {
+  const { t } = useLanguage();
   const [potholes, setPotholes] = useState<Pothole[]>([]);
   const [severity, setSeverity] = useState<SeverityFilter>("all");
   const [status, setStatus] = useState<StatusFilter>("all");
@@ -29,48 +31,48 @@ export default function Potholes() {
     <div className="potholes-page">
       <div className="page-title-row">
         <div>
-          <span className="eyebrow dark">Detections</span>
-          <h1>Potholes</h1>
-          <p>Filter AI detections by severity, repair status, and date.</p>
+          <span className="eyebrow dark">{t("detections")}</span>
+          <h1>{t("potholes")}</h1>
+          <p>{t("filterAIDetections")}</p>
         </div>
-        <strong>{filtered.length} visible</strong>
+        <strong>{filtered.length} {t("visible")}</strong>
       </div>
 
       <section className="filter-bar">
         <label>
-          Severity
+          {t("severity")}
           <select value={severity} onChange={(event) => setSeverity(event.target.value as SeverityFilter)}>
-            <option value="all">All</option>
-            <option value="critical">Critical</option>
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
+            <option value="all">{t("all")}</option>
+            <option value="critical">{t("critical")}</option>
+            <option value="high">{t("high")}</option>
+            <option value="medium">{t("medium")}</option>
+            <option value="low">{t("low")}</option>
           </select>
         </label>
         <label>
-          Status
+          {t("status")}
           <select value={status} onChange={(event) => setStatus(event.target.value as StatusFilter)}>
-            <option value="all">All</option>
-            <option value="detected">Detected</option>
-            <option value="in_progress">In progress</option>
-            <option value="fixed">Fixed</option>
-            <option value="reopened">Reopened</option>
+            <option value="all">{t("all")}</option>
+            <option value="detected">{t("detected")}</option>
+            <option value="in_progress">{t("in_progress")}</option>
+            <option value="fixed">{t("fixed")}</option>
+            <option value="reopened">{t("reopened")}</option>
           </select>
         </label>
         <label>
-          Date
+          {t("date")}
           <input type="date" value={date} onChange={(event) => setDate(event.target.value)} />
         </label>
       </section>
 
       <section className="panel pothole-table-panel">
         <div className="pothole-table pothole-table-head">
-          <span>ID</span>
-          <span>Severity</span>
-          <span>Status</span>
-          <span>Location</span>
-          <span>Date</span>
-          <span>Confidence</span>
+          <span>{t("id")}</span>
+          <span>{t("severity")}</span>
+          <span>{t("status")}</span>
+          <span>{t("location")}</span>
+          <span>{t("date")}</span>
+          <span>{t("confidence")}</span>
         </div>
         <div className="pothole-table-body">
           {filtered.map((pothole) => (

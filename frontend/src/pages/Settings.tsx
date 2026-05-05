@@ -1,13 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLanguage } from "../contexts/LanguageContext";
 
 export default function Settings() {
   const { language, setLanguage, t } = useLanguage();
   const [darkMode, setDarkMode] = useState(false);
 
+  useEffect(() => {
+    const isDark = document.body.classList.contains("dark-mode");
+    setDarkMode(isDark);
+  }, []);
+
   const handleDarkModeToggle = () => {
-    setDarkMode(!darkMode);
-    document.body.classList.toggle('dark-mode', !darkMode);
+    setDarkMode((current) => {
+      const nextMode = !current;
+      document.body.classList.toggle("dark-mode", nextMode);
+      return nextMode;
+    });
   };
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useLanguage } from "../contexts/LanguageContext";
 import { CircleMarker, MapContainer, Polyline, TileLayer, Tooltip } from "react-leaflet";
 import { tripsData } from "../data/mockData";
 import type { Trip } from "../types";
@@ -13,6 +14,7 @@ const formatNow = () => new Date().toLocaleString([], {
 });
 
 export default function Trips() {
+  const { t } = useLanguage();
   const [trips, setTrips] = useState<Trip[]>(tripsData);
   const currentTrip = trips.find((trip) => trip.status === "active") ?? null;
   const completedTrips = trips.filter((trip) => trip.status === "completed");
@@ -59,13 +61,13 @@ export default function Trips() {
     <div className="trips-page dashboard-page">
       <div className="page-title-row">
         <div>
-          <span className="eyebrow dark">Trip Management</span>
-          <h1>Route Monitoring</h1>
-          <p>Start a detection trip, watch the current route, and review completed route history.</p>
+          <span className="eyebrow dark">{t("tripManagement")}</span>
+          <h1>{t("routeMonitoring")}</h1>
+          <p>{t("tripsOverview")}</p>
         </div>
         <div className="trip-actions">
-          <button className="primary-button compact" disabled={Boolean(currentTrip)} onClick={startTrip}>Start trip</button>
-          <button className="secondary-button" disabled={!currentTrip} onClick={endTrip}>End trip</button>
+          <button className="primary-button compact" disabled={Boolean(currentTrip)} onClick={startTrip}>{t("startTrip")}</button>
+          <button className="secondary-button" disabled={!currentTrip} onClick={endTrip}>{t("endTrip")}</button>
         </div>
       </div>
 
@@ -73,50 +75,50 @@ export default function Trips() {
         <article className="chart-card">
           <div className="chart-head">
             <div>
-              <h2>Current Trip Status</h2>
-              <p>{currentTrip ? "Live route is recording AI detections." : "No active route is running."}</p>
+              <h2>{t("currentTripStatus")}</h2>
+              <p>{currentTrip ? t("liveRouteRecording") : t("noActiveRouteRunning")}</p>
             </div>
             <span className={`trip-status ${currentTrip ? "active" : "idle"}`}>
-              {currentTrip ? "Active" : "Idle"}
+              {currentTrip ? t("active") : t("idle")}
             </span>
           </div>
 
           <div className="trip-status-grid">
             <div>
-              <span>Trip ID</span>
-              <strong>{currentTrip?.id ?? "None"}</strong>
+              <span>{t("tripId")}</span>
+              <strong>{currentTrip?.id ?? t("none")}</strong>
             </div>
             <div>
-              <span>Route</span>
-              <strong>{currentTrip?.route ?? "Waiting for dispatch"}</strong>
+              <span>{t("route")}</span>
+              <strong>{currentTrip?.route ?? t("waitingForDispatch")}</strong>
             </div>
             <div>
-              <span>Started</span>
+              <span>{t("started")}</span>
               <strong>{currentTrip?.startedAt ?? "--"}</strong>
             </div>
             <div>
-              <span>Detections</span>
+              <span>{t("detections")}</span>
               <strong>{currentTrip?.detections ?? 0}</strong>
             </div>
           </div>
         </article>
 
         <article className="stats-panel">
-          <h2>Trip Summary</h2>
+          <h2>{t("tripSummary")}</h2>
           <div className="stat-box">
-            <span>Total trips</span>
+            <span>{t("totalTrips")}</span>
             <strong>{trips.length}</strong>
-            <small>Includes active and completed routes</small>
+            <small>{t("includesActiveAndCompletedRoutes")}</small>
           </div>
           <div className="stat-box green">
-            <span>Completed</span>
+            <span>{t("completed")}</span>
             <strong>{completedTrips.length}</strong>
-            <small>Finished trip records</small>
+            <small>{t("finishedTripRecords")}</small>
           </div>
           <div className="stat-box">
-            <span>Total detections</span>
+            <span>{t("totalDetections")}</span>
             <strong>{trips.reduce((sum, trip) => sum + trip.detections, 0)}</strong>
-            <small>Across all trips</small>
+            <small>{t("acrossAllTrips")}</small>
           </div>
         </article>
       </section>
@@ -124,8 +126,8 @@ export default function Trips() {
       <section className="chart-card">
         <div className="chart-head">
           <div>
-            <h2>Trip Route Visualization</h2>
-            <p>{currentTrip ? currentTrip.name : "Most recent route preview"}</p>
+            <h2>{t("tripRouteVisualization")}</h2>
+            <p>{currentTrip ? currentTrip.name : t("mostRecentRoutePreview")}</p>
           </div>
         </div>
         <MapContainer center={routeCenter} zoom={13} scrollWheelZoom className="trip-route-map">
@@ -138,7 +140,7 @@ export default function Trips() {
           )}
           {routeCoordinates.map((point, index) => (
             <CircleMarker key={`${point[0]}-${point[1]}`} center={point} radius={7} pathOptions={{ color: "#ffffff", fillColor: "#f97316", fillOpacity: 1, weight: 3 }}>
-              <Tooltip>{index === 0 ? "Start" : index === routeCoordinates.length - 1 ? "End" : `Stop ${index + 1}`}</Tooltip>
+              <Tooltip>{index === 0 ? t("start") : index === routeCoordinates.length - 1 ? t("end") : `${t("stop")} ${index + 1}`}</Tooltip>
             </CircleMarker>
           ))}
         </MapContainer>
@@ -147,8 +149,8 @@ export default function Trips() {
       <section className="chart-card">
         <div className="chart-head">
           <div>
-            <h2>Trip History</h2>
-            <p>Completed garbage-truck route runs and detection counts.</p>
+            <h2>{t("tripHistory")}</h2>
+            <p>{t("completedRouteRuns")}</p>
           </div>
         </div>
         <div className="activity-table">
@@ -156,10 +158,10 @@ export default function Trips() {
             <div key={trip.id} className="activity-row">
               <div>
                 <strong>{trip.id} - {trip.name}</strong>
-                <p>{trip.route} - {trip.startedAt} to {trip.endedAt}</p>
+                <p>{trip.route} - {trip.startedAt} {t("to")} {trip.endedAt}</p>
               </div>
               <div className="hero-badge" style={{ background: "#10b981" }}>
-                {trip.detections} detections
+                {trip.detections} {t("detections")}
               </div>
             </div>
           ))}

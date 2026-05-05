@@ -3,10 +3,12 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import MapView from "../components/MapView";
 import SeverityBadge from "../components/SeverityBadge";
 import StatusBadge from "../components/StatusBadge";
+import { useLanguage } from "../contexts/LanguageContext";
 import { getPotholeById } from "../services/api";
 import type { Pothole, Status } from "../types";
 
 export default function PotholeDetail() {
+  const { t } = useLanguage();
   const { id } = useParams();
   const [pothole, setPothole] = useState<Pothole | null | undefined>(undefined);
   const [status, setStatus] = useState<Status>("detected");
@@ -22,38 +24,38 @@ export default function PotholeDetail() {
   }, [id]);
 
   if (pothole === null) return <Navigate to="/potholes" replace />;
-  if (!pothole) return <div className="panel detail-loading">Loading pothole...</div>;
+  if (!pothole) return <div className="panel detail-loading">{t("loadingPothole")}</div>;
   const canLockFalsePositive = status === "false_positive" && !isFalsePositiveLocked;
 
   return (
     <div className="detail-page">
       <div className="page-title-row">
         <div>
-          <Link to="/potholes" className="back-link">Back to potholes</Link>
+          <Link to="/potholes" className="back-link">{t("backToPotholes")}</Link>
           <h1>{pothole.id}</h1>
           <p>{pothole.title}</p>
         </div>
         <div className="detail-actions">
           <button className="secondary-button" disabled={isFalsePositiveLocked} onClick={() => setStatus("false_positive")}>
-            Mark false positive
+            {t("markFalsePositive")}
           </button>
           <button
             className="secondary-button"
             disabled={!canLockFalsePositive}
             onClick={() => setIsFalsePositiveLocked(true)}
           >
-            {isFalsePositiveLocked ? "False positive locked" : "Lock False Positive"}
+            {isFalsePositiveLocked ? t("falsePositiveLocked") : t("lockFalsePositive")}
           </button>
           <select
             value={status}
             disabled={isFalsePositiveLocked}
             onChange={(event) => setStatus(event.target.value as Status)}
           >
-            <option value="detected">Detected</option>
-            <option value="in_progress">In progress</option>
-            <option value="fixed">Fixed</option>
-            <option value="reopened">Reopened</option>
-            <option value="false_positive">False positive</option>
+            <option value="detected">{t("detected")}</option>
+            <option value="in_progress">{t("in_progress")}</option>
+            <option value="fixed">{t("fixed")}</option>
+            <option value="reopened">{t("reopened")}</option>
+            <option value="false_positive">{t("falsePositive")}</option>
           </select>
         </div>
       </div>
@@ -71,19 +73,19 @@ export default function PotholeDetail() {
             <StatusBadge status={status} />
           </div>
           <dl className="detail-list">
-            <div><dt>Location</dt><dd>{pothole.location}</dd></div>
-            <div><dt>GPS coordinates</dt><dd>{pothole.latitude.toFixed(5)}, {pothole.longitude.toFixed(5)}</dd></div>
-            <div><dt>Confidence</dt><dd>{Math.round(pothole.confidence * 100)}%</dd></div>
-            <div><dt>Detected time</dt><dd>{pothole.detectedAt}</dd></div>
-            <div><dt>Verification count</dt><dd>{pothole.verification}</dd></div>
+            <div><dt>{t("location")}</dt><dd>{pothole.location}</dd></div>
+            <div><dt>{t("gpsCoordinates")}</dt><dd>{pothole.latitude.toFixed(5)}, {pothole.longitude.toFixed(5)}</dd></div>
+            <div><dt>{t("confidence")}</dt><dd>{Math.round(pothole.confidence * 100)}%</dd></div>
+            <div><dt>{t("detectedTime")}</dt><dd>{pothole.detectedAt}</dd></div>
+            <div><dt>{t("verificationCount")}</dt><dd>{pothole.verification}</dd></div>
           </dl>
         </article>
 
         <article className="chart-card">
           <div className="chart-head">
             <div>
-              <h2>Map Location</h2>
-              <p>Exact marker position for repair dispatch.</p>
+              <h2>{t("mapLocation")}</h2>
+              <p>{t("exactMarkerPosition")}</p>
             </div>
           </div>
           <MapView potholes={[pothole]} className="detail-map" />
@@ -93,8 +95,8 @@ export default function PotholeDetail() {
       <section className="chart-card">
         <div className="chart-head">
           <div>
-            <h2>Verification History</h2>
-            <p>Audit trail from AI detection to human review.</p>
+            <h2>{t("verificationHistory")}</h2>
+            <p>{t("auditTrail")}</p>
           </div>
         </div>
         <div className="activity-table">

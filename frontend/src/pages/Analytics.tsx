@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useLanguage } from "../contexts/LanguageContext";
 import { MapContainer, TileLayer } from "react-leaflet";
 import { severityDistribution, timelineData } from "../data/mockData";
 import { getAnalyticsSummary, getPotholes } from "../services/api";
@@ -54,6 +55,7 @@ const wardStats = [
 ];
 
 export default function Analytics() {
+  const { t } = useLanguage();
   const [summary, setSummary] = useState<AnalyticsSummary | null>(null);
   const [potholes, setPotholes] = useState<Pothole[]>([]);
 
@@ -98,19 +100,19 @@ export default function Analytics() {
   }, [potholes]);
 
   const cards = [
-    { label: "Total potholes", value: summary?.totalPotholes ?? 0, color: "#0f766e" },
-    { label: "Open potholes", value: summary?.openPotholes ?? 0, color: "#f97316" },
-    { label: "Fixed potholes", value: summary?.fixedPotholes ?? 0, color: "#16a34a" },
-    { label: "Critical potholes", value: summary?.criticalPotholes ?? 0, color: "#dc2626" },
+    { label: t("totalPotholes"), value: summary?.totalPotholes ?? 0, color: "#0f766e" },
+    { label: t("openPotholes"), value: summary?.openPotholes ?? 0, color: "#f97316" },
+    { label: t("fixedPotholes"), value: summary?.fixedPotholes ?? 0, color: "#16a34a" },
+    { label: t("criticalPotholes"), value: summary?.criticalPotholes ?? 0, color: "#dc2626" },
   ];
 
   return (
     <div className="analytics-page dashboard-page">
       <div className="page-title-row">
         <div>
-          <span className="eyebrow dark">Analytics</span>
-          <h1>Detection Intelligence</h1>
-          <p>Summary, density, timeline, and severity mix for live pothole detections.</p>
+          <span className="eyebrow dark">{t("analytics")}</span>
+          <h1>{t("detectionIntelligence")}</h1>
+          <p>{t("summaryDensityTimeline")}</p>
         </div>
       </div>
 
@@ -130,8 +132,8 @@ export default function Analytics() {
         <div className="chart-card">
           <div className="chart-head">
             <div>
-              <h2>Heatmap</h2>
-              <p>Detection density by area.</p>
+              <h2>{t("heatmap")}</h2>
+              <p>{t("detectionDensityByArea")}</p>
             </div>
           </div>
           <div className="heatmap-panel">
@@ -154,8 +156,8 @@ export default function Analytics() {
         <div className="chart-card">
           <div className="chart-head">
             <div>
-              <h2>Severity Pie</h2>
-              <p>Priority split across open detections.</p>
+              <h2>{t("severityPie")}</h2>
+              <p>{t("prioritySplit")}</p>
             </div>
           </div>
           <div className="pie-wrap">
@@ -175,8 +177,8 @@ export default function Analytics() {
       <section className="chart-card">
         <div className="chart-head">
           <div>
-            <h2>Timeline</h2>
-            <p>Daily AI detections this week.</p>
+            <h2>{t("timeline")}</h2>
+            <p>{t("dailyAIDetections")}</p>
           </div>
         </div>
         <div className="timeline-chart">
@@ -193,19 +195,19 @@ export default function Analytics() {
       <section className="chart-card">
         <div className="chart-head">
           <div>
-            <h2>Ward-wise Statistics</h2>
-            <p>Chennai Zone 13 ward view for Velachery and nearby Adyar-zone corridors.</p>
+            <h2>{t("wardWiseStatistics")}</h2>
+            <p>{t("wardStatsDesc")}</p>
           </div>
         </div>
         <div className="ward-table-wrap">
           <div className="ward-table ward-table-head">
-            <span>Ward</span>
-            <span>Area</span>
-            <span>Localities</span>
-            <span>Open</span>
-            <span>Fixed</span>
-            <span>Critical</span>
-            <span>Avg confidence</span>
+            <span>{t("ward")}</span>
+            <span>{t("area")}</span>
+            <span>{t("localities")}</span>
+            <span>{t("open")}</span>
+            <span>{t("fixed")}</span>
+            <span>{t("critical")}</span>
+            <span>{t("avgConfidence")}</span>
           </div>
           {wardStats.map((ward) => (
             <div key={ward.ward} className="ward-table ward-table-row">
