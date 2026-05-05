@@ -1838,21 +1838,6 @@ body.dark-mode .secondary-button:hover {
   background-size: 42px 42px;
 }
 
-.heat-point {
-  position: absolute;
-  width: 72px;
-  height: 72px;
-  transform: translate(-50%, -50%);
-  border-radius: 999px;
-  filter: blur(8px);
-  opacity: 0.72;
-}
-
-.heat-critical { background: #dc2626; }
-.heat-high { background: #f97316; }
-.heat-medium { background: #eab308; }
-.heat-low { background: #16a34a; }
-
 .pie-wrap {
   display: grid;
   justify-items: center;
