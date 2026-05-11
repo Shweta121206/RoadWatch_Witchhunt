@@ -1,0 +1,12 @@
+node_modules/
+dist/
+frontend/node_modules/
+frontend/dist/
+*.log
+*.DS_Store
+backend/.venv/
+backend/roadwatch.db
+backend/uploads/*
+!backend/uploads/.gitkeep
+backend/model/*
+!backend/model/.gitkeep
