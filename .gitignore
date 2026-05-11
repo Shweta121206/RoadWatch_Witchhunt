@@ -10,3 +10,10 @@ backend/uploads/*
 !backend/uploads/.gitkeep
 backend/model/*
 !backend/model/.gitkeep
+.vscode/
+.env
+pycache/
+*.pyc
+uploads/
+*.sqlite3
+*.db
