@@ -1751,6 +1751,21 @@ body.dark-mode .secondary-button:hover {
   background: #ffffff;
 }
 
+.empty-state {
+  padding: 18px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+  color: var(--text-muted);
+  font-weight: 800;
+  text-align: center;
+}
+
+.empty-state.compact {
+  padding: 14px;
+  font-size: 0.9rem;
+}
+
 .live-feed-item div {
   display: grid;
   gap: 3px;
@@ -2029,6 +2044,76 @@ body.dark-mode .secondary-button:hover {
 
 .detail-loading {
   padding: 24px;
+}
+
+.upload-page {
+  display: grid;
+  gap: 22px;
+}
+
+.upload-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 22px;
+  align-items: start;
+}
+
+.upload-form {
+  gap: 18px;
+}
+
+.upload-dropzone {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+  color: var(--text);
+}
+
+.upload-dropzone input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 11px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.upload-dropzone strong {
+  color: #0f766e;
+}
+
+.upload-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.upload-status-card {
+  display: grid;
+  gap: 16px;
+}
+
+.upload-status-list {
+  display: grid;
+  gap: 10px;
+}
+
+.upload-status-list div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.upload-status-list span {
+  color: var(--text-muted);
+  font-weight: 800;
 }
 
 .ward-table-wrap {

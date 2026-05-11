@@ -1,30 +1,28 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import MapView from "../components/MapView";
 import SeverityBadge from "../components/SeverityBadge";
 import StatusBadge from "../components/StatusBadge";
 import { useLanguage } from "../contexts/LanguageContext";
-import { getPotholeById } from "../services/api";
+import { usePotholeData } from "../contexts/PotholeDataContext";
 import type { Pothole, Status } from "../types";
 
 export default function PotholeDetail() {
   const { t } = useLanguage();
   const { id } = useParams();
-  const [pothole, setPothole] = useState<Pothole | null | undefined>(undefined);
+  const { potholes } = usePotholeData();
+  const pothole = useMemo<Pothole | null>(() => (
+    potholes.find((item) => item.id === id) ?? null
+  ), [id, potholes]);
   const [status, setStatus] = useState<Status>("detected");
   const [isFalsePositiveLocked, setIsFalsePositiveLocked] = useState(false);
 
   useEffect(() => {
-    if (!id) return;
-    getPotholeById(id).then((nextPothole) => {
-      setPothole(nextPothole);
-      if (nextPothole) setStatus(nextPothole.status);
-      setIsFalsePositiveLocked(false);
-    });
-  }, [id]);
+    if (pothole) setStatus(pothole.status);
+    setIsFalsePositiveLocked(false);
+  }, [pothole]);
 
   if (pothole === null) return <Navigate to="/potholes" replace />;
-  if (!pothole) return <div className="panel detail-loading">{t("loadingPothole")}</div>;
   const canLockFalsePositive = status === "false_positive" && !isFalsePositiveLocked;
 
   return (
@@ -63,11 +61,6 @@ export default function PotholeDetail() {
       <section className="detail-grid">
         <article className="chart-card">
           <img className="detail-image" src={pothole.image} alt={pothole.title} />
-          <div className="pothole-gallery">
-            {(pothole.gallery ?? [pothole.image]).map((src) => (
-              <img key={src} src={src} alt={pothole.title} />
-            ))}
-          </div>
           <div className="detail-badges">
             <SeverityBadge severity={pothole.severity} />
             <StatusBadge status={status} />

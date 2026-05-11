@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { MapContainer, TileLayer } from "react-leaflet";
 import { severityDistribution, timelineData } from "../data/mockData";
-import { getAnalyticsSummary, getPotholes } from "../services/api";
-import type { AnalyticsSummary, Pothole } from "../types";
 import LeafletHeatmap from "../components/LeafletHeatmap";
+import { usePotholeData } from "../contexts/PotholeDataContext";
 
 const wardStats = [
   {
@@ -56,13 +55,7 @@ const wardStats = [
 
 export default function Analytics() {
   const { t } = useLanguage();
-  const [summary, setSummary] = useState<AnalyticsSummary | null>(null);
-  const [potholes, setPotholes] = useState<Pothole[]>([]);
-
-  useEffect(() => {
-    getAnalyticsSummary().then(setSummary);
-    getPotholes().then(setPotholes);
-  }, []);
+  const { analyticsSummary: summary, potholes, isDatasetUploaded } = usePotholeData();
 
   const center: [number, number] = potholes.length
     ? [potholes[0].latitude, potholes[0].longitude]
@@ -161,15 +154,21 @@ export default function Analytics() {
             </div>
           </div>
           <div className="pie-wrap">
-            <div className="severity-pie" />
-            <div className="pie-legend">
-              {severityDistribution.map((item) => (
-                <span key={item.label}>
-                  <i style={{ background: item.color }} />
-                  {item.label} {item.value}%
-                </span>
-              ))}
-            </div>
+            {isDatasetUploaded ? (
+              <>
+                <div className="severity-pie" />
+                <div className="pie-legend">
+                  {severityDistribution.map((item) => (
+                    <span key={item.label}>
+                      <i style={{ background: item.color }} />
+                      {item.label} {item.value}%
+                    </span>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="empty-state">Severity details appear after upload.</div>
+            )}
           </div>
         </div>
       </section>
@@ -182,13 +181,17 @@ export default function Analytics() {
           </div>
         </div>
         <div className="timeline-chart">
-          {timelineData.map((day) => (
-            <div key={day.date} className="timeline-bar-wrap">
-              <span className="timeline-bar" style={{ height: `${day.value * 4}px` }} />
-              <strong>{day.value}</strong>
-              <small>{day.date}</small>
-            </div>
-          ))}
+          {isDatasetUploaded ? (
+            timelineData.map((day) => (
+              <div key={day.date} className="timeline-bar-wrap">
+                <span className="timeline-bar" style={{ height: `${day.value * 4}px` }} />
+                <strong>{day.value}</strong>
+                <small>{day.date}</small>
+              </div>
+            ))
+          ) : (
+            <div className="empty-state">Timeline details appear after upload.</div>
+          )}
         </div>
       </section>
 
@@ -209,17 +212,21 @@ export default function Analytics() {
             <span>{t("critical")}</span>
             <span>{t("avgConfidence")}</span>
           </div>
-          {wardStats.map((ward) => (
-            <div key={ward.ward} className="ward-table ward-table-row">
-              <strong>{ward.ward}</strong>
-              <span>{ward.area}</span>
-              <span>{ward.localities}</span>
-              <span>{ward.open}</span>
-              <span>{ward.fixed}</span>
-              <span>{ward.critical}</span>
-              <span>{ward.confidence}</span>
-            </div>
-          ))}
+          {isDatasetUploaded ? (
+            wardStats.map((ward) => (
+              <div key={ward.ward} className="ward-table ward-table-row">
+                <strong>{ward.ward}</strong>
+                <span>{ward.area}</span>
+                <span>{ward.localities}</span>
+                <span>{ward.open}</span>
+                <span>{ward.fixed}</span>
+                <span>{ward.critical}</span>
+                <span>{ward.confidence}</span>
+              </div>
+            ))
+          ) : (
+            <div className="empty-state">Ward details appear after upload.</div>
+          )}
         </div>
       </section>
     </div>

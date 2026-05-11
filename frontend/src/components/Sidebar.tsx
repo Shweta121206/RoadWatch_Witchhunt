@@ -30,12 +30,13 @@ const navItems = [
     ),
   },
   {
-    path: "/trips",
-    labelKey: "trips",
+    path: "/upload",
+    labelKey: "upload",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 7h18M6 7v10h12V7M6 17h12" />
-        <path d="M8 4h8l2 3H6L8 4Z" />
+        <path d="M12 16V4" />
+        <path d="m7 9 5-5 5 5" />
+        <path d="M5 20h14" />
       </svg>
     ),
   },

@@ -1,24 +1,20 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { Link } from "react-router-dom";
 import SeverityBadge from "../components/SeverityBadge";
 import StatusBadge from "../components/StatusBadge";
-import { getPotholes } from "../services/api";
-import type { Pothole, Severity, Status } from "../types";
+import { usePotholeData } from "../contexts/PotholeDataContext";
+import type { Severity, Status } from "../types";
 
 type SeverityFilter = "all" | Severity;
 type StatusFilter = "all" | Status;
 
 export default function Potholes() {
   const { t } = useLanguage();
-  const [potholes, setPotholes] = useState<Pothole[]>([]);
+  const { potholes } = usePotholeData();
   const [severity, setSeverity] = useState<SeverityFilter>("all");
   const [status, setStatus] = useState<StatusFilter>("all");
   const [date, setDate] = useState("");
-
-  useEffect(() => {
-    getPotholes().then(setPotholes);
-  }, []);
 
   const filtered = useMemo(() => potholes.filter((pothole) => {
     const matchesSeverity = severity === "all" || pothole.severity === severity;
@@ -75,16 +71,20 @@ export default function Potholes() {
           <span>{t("confidence")}</span>
         </div>
         <div className="pothole-table-body">
-          {filtered.map((pothole) => (
-            <Link key={pothole.id} to={`/potholes/${pothole.id}`} className="pothole-table pothole-table-row">
-              <strong>{pothole.id}</strong>
-              <SeverityBadge severity={pothole.severity} />
-              <StatusBadge status={pothole.status} />
-              <span>{pothole.location}</span>
-              <span>{pothole.detectedAt}</span>
-              <span>{Math.round(pothole.confidence * 100)}%</span>
-            </Link>
-          ))}
+          {filtered.length === 0 ? (
+            <div className="empty-state">No pothole details are visible until the upload is complete.</div>
+          ) : (
+            filtered.map((pothole) => (
+              <Link key={pothole.id} to={`/potholes/${pothole.id}`} className="pothole-table pothole-table-row">
+                <strong>{pothole.id}</strong>
+                <SeverityBadge severity={pothole.severity} />
+                <StatusBadge status={pothole.status} />
+                <span>{pothole.location}</span>
+                <span>{pothole.detectedAt}</span>
+                <span>{Math.round(pothole.confidence * 100)}%</span>
+              </Link>
+            ))
+          )}
         </div>
       </section>
     </div>
