@@ -33,6 +33,8 @@ A React + Vite frontend dashboard for the RoadWatch project.
 - Email: `admin@roadwatch.com`
 - Password: `RoadWatch123`
 
+PitSense Model Weight: https://drive.google.com/file/d/1BO9rNlzifsT9CAWSyAzXGe1b6kkU-xeb/view?usp=sharing
+
 ## Notes
 
 This implementation uses mock data and local storage authentication for dashboard behavior. You can later connect it to your backend APIs for real pothole detection, verification, and analytics data.
